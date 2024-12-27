@@ -1,0 +1,17 @@
+version: '2.4'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: z1s2c3f4##
+      MYSQL_DATABASE: kronon_db
+    ports:
+      - "3306:3306" 
+    networks:
+      - kronon-network
+
+networks:
+  kronon-network:
+    driver: bridge
