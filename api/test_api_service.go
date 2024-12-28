@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -16,6 +17,7 @@ func KlineInqReq(c *gin.Context) {
 
 	// json 요청정보 바인딩
 	if err := c.BindJSON(&reqInfo); err != nil {
+		fmt.Println(reqInfo)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"meta": gin.H{
 				"code":    http.StatusBadRequest,
@@ -36,9 +38,7 @@ func KlineInqReq(c *gin.Context) {
 				"code":    http.StatusOK,
 				"message": errMsg,
 			},
-			"data": gin.H{
-				"products": resp,
-			},
+			"data": resp,
 		})
 	} else {
 
@@ -47,9 +47,7 @@ func KlineInqReq(c *gin.Context) {
 				"code":    http.StatusInternalServerError,
 				"message": errMsg,
 			},
-			"data": gin.H{
-				"products": resp,
-			},
+			"data": resp,
 		})
 	}
 }
