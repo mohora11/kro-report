@@ -1,10 +1,12 @@
 package utility
 
 import (
+	"strconv"
+
 	bizcnst "krononlabs/com"
 )
 
-// 거래소별로 지원하는 interval을 변환
+// getBinanceInterval : 거래소별로 지원하는 interval을 변환
 func getBinanceInterval(interval string) string {
 	// 바이낸스에서는 그대로 사용
 	switch interval {
@@ -45,6 +47,7 @@ func getBinanceInterval(interval string) string {
 	}
 }
 
+// getBitgetGranularity :
 func getBitgetGranularity(interval string) string {
 	// 비트겟에서는 granularity로 각 요청값이 차이가 있음
 	switch interval {
@@ -78,14 +81,23 @@ func getBitgetGranularity(interval string) string {
 }
 
 // getExchangeInterval : 거래소별 interval에 맞게 변환
-func getExchangeInterval(granularity, exchgNm string) string {
+func GetExchangeInterval(interval, exchgNm string) string {
 
 	switch exchgNm {
 	case "binance":
-		return getBinanceInterval(granularity)
+		return getBinanceInterval(interval)
 	case "bitget":
-		return getBitgetGranularity(granularity)
+		return getBitgetGranularity(interval)
 	default:
 		return ""
 	}
+}
+
+// 문자열을 float64로 변환하는 함수 (빈 문자열이 오면 0으로 처리)
+func ParseToFloat64(value string) float64 {
+	result, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		return 0.0
+	}
+	return result
 }
