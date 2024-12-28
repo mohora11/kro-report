@@ -17,9 +17,9 @@ type KlineResp struct {
 	High                float64 `json:"high"`                             // High price
 	Low                 float64 `json:"low"`                              // Low price
 	Close               float64 `json:"close"`                            // Close price
-	BaseVolume          float64 `json:"base_volume"`                      // Volume in base currency (e.g., BTC in BTCUSDT)
-	QuoteVolume         float64 `json:"quote_volume"`                     // Volume in quote currency (e.g., USDT in BTCUSDT)
+	Volume              float64 `json:"volume"`                           // Volume in base currency (e.g., BTC in BTCUSDT)
 	CloseTime           int64   `json:"close_time,omitempty"`             // Close time for Binance (may not be available for Bitget)
+	QuoteVolume         float64 `json:"quote_volume"`                     // Volume in quote currency (e.g., USDT in BTCUSDT)
 	NumberOfTrades      int     `json:"number_of_trades,omitempty"`       // Number of trades (for Binance)
 	TakerBuyBaseVolume  float64 `json:"taker_buy_base_volume,omitempty"`  // Taker buy volume (for Binance)
 	TakerBuyQuoteVolume float64 `json:"taker_buy_quote_volume,omitempty"` // Taker buy volume in quote currency (for Binance)

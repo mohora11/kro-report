@@ -111,7 +111,12 @@ func KlineInq(ReqInfo *bsml.KlineRequest) (bool, string, []bsml.KlineResp) {
 			high := kline[2].(string)
 			low := kline[3].(string)
 			close := kline[4].(string)
-			baseVolume := kline[5].(string)
+			volume := kline[5].(string)
+			closeTime := int64(kline[6].(float64))    // closeTime
+			quoteVolume := kline[7].(string)          // quoteVolume 사용
+			numberOfTrades := int(kline[8].(float64)) // numberOfTrades
+			takerBuyBaseVolume := kline[9].(string)   // takerBuyBaseVolume
+			takerBuyQuoteVolume := kline[10].(string) // takerBuyQuoteVolume
 
 			// KlineResp 구조체에 데이터를 할당
 			resp = append(resp, bsml.KlineResp{
@@ -120,12 +125,12 @@ func KlineInq(ReqInfo *bsml.KlineRequest) (bool, string, []bsml.KlineResp) {
 				High:                utility.ParseToFloat64(high),
 				Low:                 utility.ParseToFloat64(low),
 				Close:               utility.ParseToFloat64(close),
-				BaseVolume:          utility.ParseToFloat64(baseVolume),
-				QuoteVolume:         0.0, // 바이낸스에서 quoteVolume은 사용하지 않으므로 0으로 처리
-				CloseTime:           0,   // 바이낸스에는 CloseTime이 없으므로 0
-				NumberOfTrades:      0,   // 바이낸스에는 NumberOfTrades가 없으므로 0
-				TakerBuyBaseVolume:  0.0, // 바이낸스에는 TakerBuyBaseVolume이 없음
-				TakerBuyQuoteVolume: 0.0, // 바이낸스에는 TakerBuyQuoteVolume이 없음
+				Volume:              utility.ParseToFloat64(volume),
+				CloseTime:           closeTime,                                   // 바이낸스에는 CloseTime이 없으므로 0
+				QuoteVolume:         utility.ParseToFloat64(quoteVolume),         // 바이낸스에서 quoteVolume은 사용하지 않으므로 0으로 처리
+				NumberOfTrades:      numberOfTrades,                              // 바이낸스에는 NumberOfTrades가 없으므로 0
+				TakerBuyBaseVolume:  utility.ParseToFloat64(takerBuyBaseVolume),  // 바이낸스에는 TakerBuyBaseVolume이 없음
+				TakerBuyQuoteVolume: utility.ParseToFloat64(takerBuyQuoteVolume), // 바이낸스에는 TakerBuyQuoteVolume이 없음
 			})
 		}
 	} else if ReqInfo.ExchgNm == "bitget" {
@@ -159,7 +164,7 @@ func KlineInq(ReqInfo *bsml.KlineRequest) (bool, string, []bsml.KlineResp) {
 			high := kline[2].(string)
 			low := kline[3].(string)
 			close := kline[4].(string)
-			baseVolume := kline[5].(string)
+			volume := kline[5].(string)
 
 			// KlineResp 구조체에 데이터를 할당
 			resp = append(resp, bsml.KlineResp{
@@ -168,9 +173,9 @@ func KlineInq(ReqInfo *bsml.KlineRequest) (bool, string, []bsml.KlineResp) {
 				High:                utility.ParseToFloat64(high),
 				Low:                 utility.ParseToFloat64(low),
 				Close:               utility.ParseToFloat64(close),
-				BaseVolume:          utility.ParseToFloat64(baseVolume),
-				QuoteVolume:         0.0, // 비트겟에서는 quoteVolume을 사용할 수 없으므로 0으로 처리
+				Volume:              utility.ParseToFloat64(volume),
 				CloseTime:           0,   // 비트겟에는 CloseTime이 없음
+				QuoteVolume:         0.0, // 비트겟에서는 quoteVolume을 사용할 수 없으므로 0으로 처리
 				NumberOfTrades:      0,   // 비트겟에는 NumberOfTrades가 없음
 				TakerBuyBaseVolume:  0.0, // 비트겟에는 TakerBuyBaseVolume이 없음
 				TakerBuyQuoteVolume: 0.0, // 비트겟에는 TakerBuyQuoteVolume이 없음
