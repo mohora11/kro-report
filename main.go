@@ -7,6 +7,8 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
+	"krononlabs/api"
 )
 
 var DB *gorm.DB
@@ -23,6 +25,9 @@ func main() {
 
 	// Gin 기본 웹 서버
 	ginEngine := gin.Default()
+
+	// API 라우팅 설정
+	api.ApplyRoutes(ginEngine)
 
 	// 서버 실행(로컬)
 	ginEngine.Run(":8080")

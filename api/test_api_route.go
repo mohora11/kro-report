@@ -12,7 +12,7 @@ func init() {
 // ApplyRoutes applies router to gin Router
 func ApplyRoutes(r *gin.Engine) {
 
-	// 기본 path : /cafe
+	// 기본 path : /krononlabs
 	testAPI := r.Group("/krononlabs")
 	{
 		APIApplyRoutes(testAPI)
