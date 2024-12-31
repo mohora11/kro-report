@@ -224,8 +224,7 @@ func KlineWebSocoketInqBinance(ReqInfo *bsml.WebSocketKlineRequest) (bool, strin
 
 	var resp bsml.WebSocketResponse
 
-	// 웹소켓 URL (BTCUSDT, 1분 간격)
-	url := "wss://stream.binance.com:9443/ws/btcusdt@kline_1m"
+	url := fmt.Sprintf("wss://stream.binance.com:9443/ws/%s@kline_%s", ReqInfo.Symbol, ReqInfo.Interval)
 
 	// 웹소켓 연결
 	conn, _, err := websocket.DefaultDialer.Dial(url, nil)
@@ -245,7 +244,7 @@ func KlineWebSocoketInqBinance(ReqInfo *bsml.WebSocketKlineRequest) (bool, strin
 		}
 
 		// 받은 원시 JSON 데이터를 그대로 Python 스크립트로 전달
-		cmd := exec.Command("python3", "process_kline.py")
+		cmd := exec.Command("python3", "multiAssetCryptoStrategy.py")
 
 		// 원시 JSON 데이터를 Python 스크립트에 전달
 		cmd.Stdin = bytes.NewReader(message) // 받은 JSON 메시지를 stdin으로 전달
