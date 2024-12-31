@@ -19,6 +19,25 @@ class Order:
     size: float
     order_type: str  # 'MARKET' or 'LIMIT'
     price: float = None
+
+# 주어진 Kline 데이터를 pandas DataFrame으로 변환하는 함수
+def process_kline_data(kline_data):
+    # kline_data는 Go에서 전달받은 JSON 메시지로 예상
+    kline_df = pd.DataFrame(kline_data)
+    kline_df['timestamp'] = pd.to_datetime(kline_df['timestamp'], unit='ms')
+    kline_df['open'] = pd.to_numeric(kline_df['open'])
+    kline_df['close'] = pd.to_numeric(kline_df['close'])
+    kline_df['high'] = pd.to_numeric(kline_df['high'])
+    kline_df['low'] = pd.to_numeric(kline_df['low'])
+    kline_df['volume'] = pd.to_numeric(kline_df['volume'])
+    return kline_df
+
+# 주어진 Trade 데이터를 pandas DataFrame으로 변환하는 함수
+def process_trade_data(trade_data):
+    trade_df = pd.DataFrame(trade_data)
+    trade_df['timestamp'] = pd.to_datetime(trade_df['timestamp'], unit='ms')
+    trade_df['quantity'] = pd.to_numeric(trade_df['quantity'])
+    return trade_df
     
 class MultiAssetCryptoStrategy:
     def __init__(
