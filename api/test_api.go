@@ -1,11 +1,13 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"os/exec"
 	"strconv"
 	"sync"
 	"time"
@@ -242,18 +244,36 @@ func KlineWebSocoketInqBinance(ReqInfo *bsml.WebSocketKlineRequest) (bool, strin
 			return false, "", resp
 		}
 
-		// JSON 파싱
-		err = json.Unmarshal(message, &resp)
-		fmt.Println(err)
+		// 받은 원시 JSON 데이터를 그대로 Python 스크립트로 전달
+		cmd := exec.Command("python3", "process_kline.py")
+
+		// 원시 JSON 데이터를 Python 스크립트에 전달
+		cmd.Stdin = bytes.NewReader(message) // 받은 JSON 메시지를 stdin으로 전달
+
+		// Python 스크립트 실행 결과 받기
+		output, err := cmd.CombinedOutput()
 		if err != nil {
-			return false, err.Error(), resp
-			continue
+			return false, fmt.Sprintf("error executing python script: %s", err.Error()), resp
 		}
 
-		// Kline 데이터 출력
-		fmt.Printf("Timestamp: %d, Open: %s, Close: %s, High: %s, Low: %s, Volume: %s\n",
-			resp.Kline.Timestamp, resp.Kline.OpenPrice, resp.Kline.ClosePrice,
-			resp.Kline.HighPrice, resp.Kline.LowPrice, resp.Kline.Volume)
+		// Python 스크립트의 결과 출력
+		fmt.Printf("Python script output: %s\n", output)
+
+		// 로그로 받은 원시 데이터 출력 (디버깅용)
+		fmt.Printf("Received raw Kline data: %s\n", string(message))
+
+		// // JSON 파싱
+		// err = json.Unmarshal(message, &resp)
+		// fmt.Println(err)
+		// if err != nil {
+		// 	return false, err.Error(), resp
+		// 	continue
+		// }
+
+		// // Kline 데이터 출력
+		// fmt.Printf("Timestamp: %d, Open: %s, Close: %s, High: %s, Low: %s, Volume: %s\n",
+		// 	resp.Kline.Timestamp, resp.Kline.OpenPrice, resp.Kline.ClosePrice,
+		// 	resp.Kline.HighPrice, resp.Kline.LowPrice, resp.Kline.Volume)
 	}
 }
 
@@ -339,6 +359,32 @@ func KlineWebSocoketInq(ReqInfo *bsml.WebSocketKlineRequest) (bool, string, bsml
 		return false, "지원되지 않는 거래소 입니다.", bsml.WebSocketResponse{}
 	}
 }
+
+// // Go에서 받은 원시 JSON 데이터를 파이썬 스크립트로 전달하는 함수
+// func sendToPython(rawData []byte) (string, error) {
+// 	// 파이썬 스크립트 경로
+// 	pythonScript := "multiAssetCryptoStrategy.py"
+
+// 	// 파이썬 스크립트 실행
+// 	cmd := exec.Command("python", pythonScript)
+// 	cmd.Stdin = bytes.NewReader(rawData)
+
+// 	// 파이썬의 표준 출력 결과를 캡처할 변수
+// 	var out bytes.Buffer
+// 	cmd.Stdout = &out
+// 	cmd.Stderr = &out
+
+// 	// 파이썬 스크립트 실행
+// 	err := cmd.Run()
+// 	if err != nil {
+// 		return "", fmt.Errorf("python script execution failed: %s", err)
+// 	}
+
+// 	fmt.Println(out.String())
+
+// 	// 파이썬에서 반환한 결과를 반환
+// 	return out.String(), nil
+// }
 
 // 	// 2D 배열로 된 JSON 응답 파싱
 // 	var rawData [][]interface{} // JSON을 먼저 2D 배열로 Unmarshal
